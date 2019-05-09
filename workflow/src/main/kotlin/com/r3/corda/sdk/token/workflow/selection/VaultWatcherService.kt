@@ -24,7 +24,7 @@ val UNLOCKER: ScheduledExecutorService = Executors.newSingleThreadScheduledExecu
 const val PLACE_HOLDER: String = "THIS_IS_A_PLACE_HOLDER"
 
 @CordaService
-class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSerializeAsToken() {
+class VaultWatcherService(tokenObserver: TokenObserver? = null) : SingletonSerializeAsToken() {
 
     enum class IndexingType {
         EXTERNAL_ID, PUBLIC_KEY
@@ -37,7 +37,7 @@ class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSeria
     companion object {
         val LOG = contextLogger()
 
-        private fun getObservableFromAppServiceHub(appServiceHub: AppServiceHub): VaultObserver {
+        private fun getObservableFromAppServiceHub(appServiceHub: AppServiceHub): TokenObserver {
             val config = appServiceHub.cordappProvider.getAppContext().config
 
             val indexingType = try {
@@ -53,7 +53,7 @@ class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSeria
             } else {
                 { stateAndRef, appServiceHub ->
                     val kms = appServiceHub.keyManagementService as KeyManagementServiceInternal
-                    kms.externalIdForPublicKey(stateAndRef.state.data.holder.owningKey)
+                    kms.externalIdForPublicKey(stateAndRef.state.data.holder.owningKey)?:"UNKNOWN"
                 }
             }
 
@@ -69,7 +69,7 @@ class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSeria
                 listOfThings.addAll(existingStates.states as Iterable<StateAndRef<FungibleToken<TokenType>>>)
                 existingStates = appServiceHub.vaultService.queryBy(FungibleToken::class.java, PageSpecification(pageNumber = ++currentPage, pageSize = pageSize))
             }
-            return VaultObserver(listOfThings, observable as Observable<Vault.Update<FungibleToken<in TokenType>>>, ownerProvider)
+            return TokenObserver(listOfThings, observable as Observable<Vault.Update<FungibleToken<in TokenType>>>, ownerProvider)
         }
 
         fun processToken(token: FungibleToken<*>): TokenIndex {
@@ -84,8 +84,8 @@ class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSeria
 
     //owner -> tokenClass -> tokenIdentifier -> List
     init {
-        vaultObserver?.initialValues?.forEach(::addTokenToCache)
-        vaultObserver?.source?.subscribe(::onVaultUpdate)
+        tokenObserver?.initialValues?.forEach(::addTokenToCache)
+        tokenObserver?.source?.subscribe(::onVaultUpdate)
     }
 
     private fun onVaultUpdate(t: Vault.Update<FungibleToken<in TokenType>>) {
@@ -182,7 +182,7 @@ class VaultWatcherService(vaultObserver: VaultObserver? = null) : SingletonSeria
 
 }
 
-data class VaultObserver(val initialValues: List<StateAndRef<FungibleToken<TokenType>>>,
+data class TokenObserver(val initialValues: List<StateAndRef<FungibleToken<TokenType>>>,
                          val source: Observable<Vault.Update<FungibleToken<in TokenType>>>,
                          val ownerProvider: ((StateAndRef<FungibleToken<TokenType>>, AppServiceHub) -> Any)? = null)
 

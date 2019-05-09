@@ -388,9 +388,9 @@ class VaultWatcherServiceTest {
             return inputStates to setOf(changeState, movedState)
         }
 
-        fun getDefaultVaultObserver(): Pair<VaultObserver, PublishSubject<Vault.Update<FungibleToken<out TokenType>>>> {
+        fun getDefaultVaultObserver(): Pair<TokenObserver, PublishSubject<Vault.Update<FungibleToken<out TokenType>>>> {
             val observable = PublishSubject.create<Vault.Update<FungibleToken<out TokenType>>>()
-            return Pair(VaultObserver(listOf(), observable as Observable<Vault.Update<FungibleToken<in TokenType>>>), observable)
+            return Pair(TokenObserver(listOf(), observable as Observable<Vault.Update<FungibleToken<in TokenType>>>), observable)
         }
     }
 }
