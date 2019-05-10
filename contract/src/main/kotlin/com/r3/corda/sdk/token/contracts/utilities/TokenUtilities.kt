@@ -60,6 +60,4 @@ internal infix fun <T : EvolvableTokenType> T._withNotary(notary: Party): Transa
  * shortens the public key for [AnonymousParty]s to the first 16 characters.
  * */
 val AbstractToken<*>.holderString
-    get() = {
-        (holder as? Party)?.name?.organisation ?: holder.owningKey.toStringShort().substring(0, 16)
-    }
+    get() = (holder as? Party)?.name?.organisation ?: holder.owningKey.toStringShort().substring(0, 16)
