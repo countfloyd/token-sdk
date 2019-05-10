@@ -55,7 +55,6 @@ class DiamondWithTokenScenarioTests : JITMockNetworkTests() {
         val issueTokenTx = denise.issueTokens(
                 token = diamondPointer,
                 issueTo = alice,
-                notary = notary,
                 anonymous = true
         ).getOrThrow()
         // GIC should *not* receive a copy of this issuance
