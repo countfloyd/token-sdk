@@ -5,7 +5,7 @@ import net.corda.core.contracts.Amount
 import net.corda.core.identity.AbstractParty
 
 /**
- * A simple holder for a (possibly anonymous) [AbstractParty] and a quantity of tokens.
+ * A simple holder for a (possibly anonymous) [AbstractParty] and a quantity of tokensToIssue.
  * Used in [generateMove] to define what [amount] of token [T] [party] should receive.
  */
 data class PartyAndAmount<T : TokenType>(val party: AbstractParty, val amount: Amount<T>)

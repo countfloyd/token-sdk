@@ -1,0 +1,1 @@
+**NOTE:** When the new confidential identities feature is released in Corda 5. THIS CODE WILL NOT BE REQUIRED ANYMORE.

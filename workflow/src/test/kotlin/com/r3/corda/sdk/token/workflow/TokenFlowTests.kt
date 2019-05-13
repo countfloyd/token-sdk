@@ -137,7 +137,7 @@ class TokenFlowTests : MockNetworkTest(numberOfNodes = 4) {
         val issueTokenTx = I.issueTokens(housePointer, A, 100 of housePointer).getOrThrow()
         A.watchForTransaction(issueTokenTx.id).toCompletableFuture().getOrThrow()
         A.transaction { A.services.vaultService.getLinearStateById<LinearState>(housePointer.pointer.pointer) }
-        // Move some of the tokens.
+        // Move some of the tokensToIssue.
         val moveTokenTx = A.moveTokens(housePointer, B, 50 of housePointer, anonymous = true).getOrThrow()
         B.watchForTransaction(moveTokenTx.id).getOrThrow()
     }
@@ -180,7 +180,7 @@ class TokenFlowTests : MockNetworkTest(numberOfNodes = 4) {
 //            val distList = getDistributionList(I2.services, token.linearId()).map { it.party }.toSet()
 //            assertThat(distList).containsExactly(A.legalIdentity())
 //        }
-        // Move some of the tokens.
+        // Move some of the tokensToIssue.
         val moveTokenTx = A.moveTokens(housePointer, B, 50 of housePointer, anonymous = true).getOrThrow()
         B.watchForTransaction(moveTokenTx.id).getOrThrow()
         // Assert that both A and B are on distribution list for both I and I2

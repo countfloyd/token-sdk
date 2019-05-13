@@ -10,10 +10,6 @@ import net.corda.core.flows.InitiatedBy
 class IssueTokensFlowHandler(val otherSession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        // Transaction observers - those which are not participants in any of the output states - must invoke
-        // FinalityFlow with StatesToRecord set to ALL_VISIBLE, otherwise they will not store any of the states. This
-        // does mean that there is an "all or nothing" approach to storing outputs, so if there are privacy concerns,
-        // then it is best to split state issuance up for different parties in separate flow invocations.
         subFlow(ObserverAwareFinalityFlowHandler(otherSession))
     }
 }

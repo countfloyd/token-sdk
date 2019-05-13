@@ -2,8 +2,8 @@ package com.r3.corda.sdk.token.workflow.flows.move
 
 import co.paralleluniverse.fibers.Suspendable
 import com.r3.corda.sdk.token.contracts.types.TokenType
-import com.r3.corda.sdk.token.workflow.flows.finality.FinalizeTokensTransactionFlow
-import com.r3.corda.sdk.token.workflow.utilities.sessionsForParicipants
+import com.r3.corda.sdk.token.workflow.flows.distribution.UpdateDistributionListFlow
+import com.r3.corda.sdk.token.workflow.utilities.sessionsForParticipantsAndObservers
 import net.corda.core.contracts.Amount
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -62,7 +62,7 @@ abstract class MoveTokensFlow<T : TokenType> private constructor(
 
     //TODO fix progress tracker
     companion object {
-        object GENERATE_MOVE : ProgressTracker.Step("Generating tokens move.")
+        object GENERATE_MOVE : ProgressTracker.Step("Generating tokensToIssue move.")
         object SIGNING : ProgressTracker.Step("Signing transaction proposal.")
         object RECORDING : ProgressTracker.Step("Recording signed transaction.") {
             override fun childProgressTracker() = FinalityFlow.tracker()
@@ -80,7 +80,7 @@ abstract class MoveTokensFlow<T : TokenType> private constructor(
         progressTracker.currentStep = RECORDING
         val outputs = transactionBuilder.outputStates().map { it.data }
         // Create new sessions if this is started as a top level flow.
-        val sessions = if (existingSessions.isEmpty()) sessionsForParicipants(outputs, observers) else existingSessions
-        return subFlow(FinalizeTokensTransactionFlow(transactionBuilder, sessions.toList()))
+        val sessions = if (existingSessions.isEmpty()) sessionsForParticipantsAndObservers(outputs, observers) else existingSessions
+        return subFlow(UpdateDistributionListFlow(transactionBuilder, sessions.toList()))
     }
 }

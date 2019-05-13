@@ -20,7 +20,7 @@ object UpdateDistributionList {
     data class DistributionListUpdate(val oldParty: Party, val newParty: Party, val linearId: UniqueIdentifier)
 
     // TODO It's ineffective if we are heavily using confidential identities, because we contact maintainers every time we do move
-    // tokens with token pointers.
+    // tokensToIssue with token pointers.
     @InitiatingFlow
     class Initiator<T : EvolvableTokenType>(
             val tokenPointer: TokenPointer<T>,

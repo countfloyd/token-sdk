@@ -58,7 +58,7 @@ class TokenSelection(val services: ServiceHub, private val maxRetries: Int = 8, 
             sorter: Sort,
             stateAndRefs: MutableList<StateAndRef<FungibleToken<T>>>
     ): Boolean {
-        // Didn't need to select any tokens.
+        // Didn't need to select any tokensToIssue.
         if (requiredAmount.quantity == 0L) {
             return false
         }
@@ -85,15 +85,15 @@ class TokenSelection(val services: ServiceHub, private val maxRetries: Int = 8, 
         }
 
         val claimedAmountWithToken = Amount(claimedAmount, requiredAmount.token)
-        // No tokens available.
+        // No tokensToIssue available.
         if (stateAndRefs.isEmpty()) return false
-        // There were not enough tokens available.
+        // There were not enough tokensToIssue available.
         if (claimedAmountWithToken < requiredAmount) {
             logger.trace("TokenType selection requested $requiredAmount but retrieved $claimedAmountWithToken with state refs: ${stateAndRefs.map { it.ref }}")
             return false
         }
 
-        // We picked enough tokens, so softlock and go.
+        // We picked enough tokensToIssue, so softlock and go.
         logger.trace("TokenType selection for $requiredAmount retrieved ${stateAndRefs.count()} states totalling $claimedAmountWithToken: $stateAndRefs")
         services.vaultService.softLockReserve(lockId, stateAndRefs.map { it.ref }.toNonEmptySet())
         return true
@@ -156,7 +156,7 @@ class TokenSelection(val services: ServiceHub, private val maxRetries: Int = 8, 
     }
 
     /**
-     * Generate move of [FungibleToken] T to parties specified in [PartyAndAmount]. Each party will receive amount defined
+     * Generate move of [FungibleToken] T to tokenHolders specified in [PartyAndAmount]. Each party will receive amount defined
      * by [partyAndAmounts]. If query criteria is not specified then only owned token amounts are used. Use [QueryUtilities.tokenAmountWithIssuerCriteria]
      * to specify issuer. This function mutates [builder] provided as parameter.
      * If [changeOwner] is provided, then the change outputs (if present) will be returned back to this identity. If not,
@@ -171,7 +171,7 @@ class TokenSelection(val services: ServiceHub, private val maxRetries: Int = 8, 
             queryCriteria: QueryCriteria? = null,
             changeOwner: AbstractParty? = null
     ): Pair<TransactionBuilder, List<PublicKey>> {
-        // Grab some tokens from the vault and soft-lock.
+        // Grab some tokensToIssue from the vault and soft-lock.
         // Only supports moves of the same token instance currently.
         // TODO Support spends for different token types, different instances of the same type.
         // The way to do this will be to perform a query for each token type. If there are multiple token types then

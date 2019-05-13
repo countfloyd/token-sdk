@@ -23,7 +23,7 @@ fun addMoveTokens(inputs: List<StateAndRef<AbstractToken<*>>>, outputs: List<Abs
     val outputGroups: Map<IssuedTokenType<TokenType>, List<AbstractToken<*>>> = outputs.groupBy { it.issuedTokenType }
     val inputGroups: Map<IssuedTokenType<TokenType>, List<StateAndRef<AbstractToken<*>>>> = inputs.groupBy { it.state.data.issuedTokenType }
     check(outputGroups.keys == inputGroups.keys) {
-        "Inputs' and outputs' token types must correspond to each other when moving tokens"
+        "Inputs' and outputs' token types must correspond to each other when moving tokensToIssue"
     }
 
     transactionBuilder.apply {

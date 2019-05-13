@@ -1,12 +1,12 @@
-package com.r3.corda.sdk.token.workflow.flows
+package com.r3.corda.sdk.token.workflow.flows.redeem
 
 import co.paralleluniverse.fibers.Suspendable
 import com.r3.corda.sdk.token.contracts.states.AbstractToken
 import com.r3.corda.sdk.token.contracts.states.FungibleToken
 import com.r3.corda.sdk.token.contracts.states.NonFungibleToken
 import com.r3.corda.sdk.token.contracts.types.TokenType
-import com.r3.corda.sdk.token.workflow.flows.confidential.RequestConfidentialIdentityFlow
-import com.r3.corda.sdk.token.workflow.flows.confidential.RequestConfidentialIdentityFlowHandler
+import com.r3.corda.sdk.token.workflow.flows.confidential.internal.RequestConfidentialIdentityFlow
+import com.r3.corda.sdk.token.workflow.flows.confidential.internal.RequestConfidentialIdentityFlowHandler
 import com.r3.corda.sdk.token.workflow.selection.TokenSelection
 import com.r3.corda.sdk.token.workflow.selection.generateExitNonFungible
 import com.r3.corda.sdk.token.workflow.utilities.ownedTokensByTokenIssuer
@@ -40,7 +40,7 @@ object RedeemToken {
             val anonymous: Boolean = true
     ) : FlowLogic<SignedTransaction>() {
         companion object {
-            object REDEEM_NOTIFICATION : ProgressTracker.Step("Sending redeem notification to parties.")
+            object REDEEM_NOTIFICATION : ProgressTracker.Step("Sending redeem notification to tokenHolders.")
             object CONF_ID : ProgressTracker.Step("Requesting confidential identity.")
             object SELECTING_STATES : ProgressTracker.Step("Selecting states to redeem.")
             object SEND_STATE_REF : ProgressTracker.Step("Sending states to the issuer for redeeming.")
@@ -58,7 +58,7 @@ object RedeemToken {
             val issuerSession = initiateFlow(issuer)
 
             progressTracker.currentStep = REDEEM_NOTIFICATION
-            // Notify the recipient that we'll be sending them tokens for redeeming and advise them of anything they must do, e.g.
+            // Notify the recipient that we'll be sending them tokensToIssue for redeeming and advise them of anything they must do, e.g.
             // request a confidential identity.
             issuerSession.send(TokenRedeemNotification(anonymous = anonymous, amount = amount))
 

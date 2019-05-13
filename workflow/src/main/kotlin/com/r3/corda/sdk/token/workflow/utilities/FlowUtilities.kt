@@ -54,7 +54,10 @@ fun requireSessionsForParticipants(participants: Collection<Party>, sessions: Se
     }
 }
 
-fun FlowLogic<*>.sessionsForParicipants(states: List<ContractState>, otherParties: Iterable<Party>): Set<FlowSession> {
+fun FlowLogic<*>.sessionsForParticipantsAndObservers(
+        states: List<ContractState>,
+        otherParties: Iterable<Party> = emptyList()
+): Set<FlowSession> {
     val stateParties = states.flatMap(ContractState::participants)
     val wellKnownStateParties = stateParties.toWellKnownParties(serviceHub)
     val allParties = wellKnownStateParties + otherParties

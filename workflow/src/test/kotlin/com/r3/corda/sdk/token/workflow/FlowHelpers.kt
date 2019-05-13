@@ -5,13 +5,13 @@ import com.r3.corda.sdk.token.contracts.types.TokenType
 import com.r3.corda.sdk.token.contracts.utilities.heldBy
 import com.r3.corda.sdk.token.contracts.utilities.issuedBy
 import com.r3.corda.sdk.token.contracts.utilities.withNotary
-import com.r3.corda.sdk.token.workflow.flows.CreateEvolvableToken
-import com.r3.corda.sdk.token.workflow.flows.RedeemToken
-import com.r3.corda.sdk.token.workflow.flows.UpdateEvolvableToken
+import com.r3.corda.sdk.token.workflow.flows.evolvable.CreateEvolvableToken
+import com.r3.corda.sdk.token.workflow.flows.evolvable.UpdateEvolvableToken
 import com.r3.corda.sdk.token.workflow.flows.issue.ConfidentialIssueTokensFlow
 import com.r3.corda.sdk.token.workflow.flows.issue.MakeIssueTokensFlow
 import com.r3.corda.sdk.token.workflow.flows.move.ConfidentialMoveTokensFlow
 import com.r3.corda.sdk.token.workflow.flows.move.MakeMoveTokenFlow
+import com.r3.corda.sdk.token.workflow.flows.redeem.RedeemToken
 import net.corda.core.concurrent.CordaFuture
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.StateAndRef
