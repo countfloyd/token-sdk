@@ -11,3 +11,9 @@ import net.corda.core.serialization.CordaSerializable
  */
 @CordaSerializable
 data class PartyAndAmount<T : TokenType>(val party: AbstractParty, val amount: Amount<T>)
+
+/**
+ * A simple holder for a (possibly anonymous) [AbstractParty] and a token.
+ * Used in [generateMove] to define what token [T] [party] should receive.
+ */
+data class PartyAndToken<T : TokenType>(val party: AbstractParty, val token: T)

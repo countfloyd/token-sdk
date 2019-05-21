@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 /**
  * This test suite is intended to test and demonstrate common scenarios for working with evolvable token types and
- * non-fungible (discrete) holdable tokens.
+ * non-fungible (discrete) holdable tokensToIssue.
  */
 class DiamondWithTokenScenarioTests : JITMockNetworkTests() {
 
@@ -46,10 +46,9 @@ class DiamondWithTokenScenarioTests : JITMockNetworkTests() {
         // STEP 02: Denise creates ownership token
         // Denise issues the token to Alice
         val diamondPointer = publishedDiamond.state.data.toPointer<DiamondGradingReport>()
-        val issueTokenTx = denise.issueTokens(
+        val issueTokenTx = denise.issueNonFungibleTokens(
                 token = diamondPointer,
                 issueTo = alice,
-                notary = notary,
                 anonymous = true
         ).getOrThrow(Duration.ofSeconds(5))
         // GIC should *not* receive a copy of this issuance
@@ -58,13 +57,13 @@ class DiamondWithTokenScenarioTests : JITMockNetworkTests() {
 
         // STEP 03: Alice transfers ownership to Bob
         // Continuing the chain of sale
-        val moveTokenToBobTx = alice.moveTokens(diamondPointer, bob, anonymous = true).getOrThrow(Duration.ofSeconds(5))
+        val moveTokenToBobTx = alice.moveNonFungibleTokens(diamondPointer, bob, anonymous = true).getOrThrow(Duration.ofSeconds(5))
         assertHasTransaction(moveTokenToBobTx, alice, bob)
         assertNotHasTransaction(moveTokenToBobTx, gic, denise)
 
         // STEP 04: Bob transfers ownership to Charlie
         // Continuing the chain of sale
-        val moveTokenToCharlieTx = bob.moveTokens(diamondPointer, charlie, anonymous = true).getOrThrow(Duration.ofSeconds(5))
+        val moveTokenToCharlieTx = bob.moveNonFungibleTokens(diamondPointer, charlie, anonymous = true).getOrThrow(Duration.ofSeconds(5))
         assertHasTransaction(moveTokenToCharlieTx, bob, charlie)
         assertNotHasTransaction(moveTokenToCharlieTx, gic, denise, alice)
 
